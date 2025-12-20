@@ -133,6 +133,8 @@ def upsert_droid_status(droid, nftArray, nftsLiquUSD, lpPosArray, botArray, rati
     existing = cursor.fetchone()
 
     currWatchTokenUSD = float(LpPoolStat['token0']['tokenDayData'][0]['priceUSD'])	#TODO: change to dynamic
+    currEmaPrice = float(LpPoolStat['ema'])
+    print("currEmaPrice: ", currEmaPrice)
     
     if existing:
         # UPDATE existing record
@@ -147,7 +149,8 @@ def upsert_droid_status(droid, nftArray, nftsLiquUSD, lpPosArray, botArray, rati
             ladderArray = %s,
             risingRebalTrigg = %s,
             fallingRebalTrigg = %s,
-            currWatchTokenUSD = %s
+            currWatchTokenUSD = %s,
+            currEmaPrice = %s
         WHERE droidId = %s
         """
         cursor.execute(sql, (
@@ -160,7 +163,9 @@ def upsert_droid_status(droid, nftArray, nftsLiquUSD, lpPosArray, botArray, rati
             risingRebalTrigg,
             fallingRebalTrigg,
             currWatchTokenUSD,
+            currEmaPrice,
             droidId
+            
             
         ))
     else:
@@ -176,9 +181,10 @@ def upsert_droid_status(droid, nftArray, nftsLiquUSD, lpPosArray, botArray, rati
             ladderArray,
             risingRebalTrigg,
             fallingRebalTrigg,
-            currWatchTokenUSD
+            currWatchTokenUSD,
+            currEmaPrice
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
         cursor.execute(sql, (
             droidId,
@@ -190,7 +196,8 @@ def upsert_droid_status(droid, nftArray, nftsLiquUSD, lpPosArray, botArray, rati
             ladderArray_json,
             risingRebalTrigg,
             fallingRebalTrigg,
-            currWatchTokenUSD
+            currWatchTokenUSD,
+            currEmaPrice
         ))
 
     connection.commit()
@@ -1431,6 +1438,8 @@ def centerRebalance(droid, cursor, connection):
 	currentNft = getNftNumber(droid, cursor) if droid['centerPosBotId'] != 0 else 0
 
 	print(f"🔍 existingNft: {existingNft}, currentNft: {currentNft}")
+	#ADD CHECK HERE: 
+	if(existingNft==currentNft): return {"status": "failed", "step": "same_nft_check"}
 
 	if existingNft == 0:
 		# Minting a new NFT position
@@ -2162,8 +2171,11 @@ def perform_droid_action(droid: dict, action: str, cursor, connection):
 	max_gas_calc=getMaxGasGwei(droid['fundingUSD'])
 	print("max_gas_calc: ", max_gas_calc)
 	print()
-	#gasCheck=getGasCheck(max_gas_calc)	#True/False return. 
-	gasCheck=True	#TODO: THIS IS A TEST REMOVE Latter.
+	gasCheck=getGasCheck(max_gas_calc)	#True/False return. 
+	print("gasCheck returned: ", gasCheck)
+	print()
+	
+	#gasCheck=True	#TODO: THIS IS A TEST REMOVE Latter.
 	if(gasCheck):
 		print("Updating Positions...")
 		print()

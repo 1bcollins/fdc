@@ -16,6 +16,7 @@ import feeRates
 import getMainNetErcPrice
 import json
 from decimal import Decimal
+import getBlockCompare
 
 def convert_decimals(obj):
     if isinstance(obj, dict):
@@ -331,6 +332,10 @@ def getFixedPositions(pool_id, OWNER_ADDRESS):
 		return
 	pool_address = lp_pool["poolAddress"]
 	stable_coin_pos = lp_pool["stableCoinPosition"]
+	#check 'block compare'
+	print()
+	difference, infura_block, sg_block=getBlockCompare.compare_blocks()
+	print()
 	# Fetch pool status and positions
 	pool_status = getPoolData.get_uniswap_v3_pool_data(pool_address, stable_coin_pos)
 	positions = getMainNetPositions.query_subgraph(pool_address, OWNER_ADDRESS)
@@ -387,13 +392,51 @@ def analyze_active_positions(fixedPositions):
 
 				
 
+def waitForSubGraph():
+	# Initial block check
+	difference, infura_block, sg_block = getBlockCompare.compare_blocks()
+	print("Initial check: difference, infura_block, sg_block:", difference, infura_block, sg_block)
 
+	first_infura_block = infura_block
 
+	# Loop until Subgraph catches up
+	max_attempts = 20        # optional safety limit
+	attempt = 0
+	
+	time.sleep(3)
+
+	while True:
+		attempt += 1
+		# Check stop conditions
+		if difference == 0 or sg_block >= first_infura_block:
+			print(f"Subgraph synced at attempt {attempt}")
+			break
+
+		# Optional: prevent infinite loop
+		if attempt >= max_attempts:
+			print("Max attempts reached, exiting loop")
+			break
+
+		# Wait a short interval before retrying
+		time.sleep(6)
+
+		# Fetch latest block numbers again
+		difference, infura_block, sg_block = getBlockCompare.compare_blocks()
+		print(f"Attempt {attempt}: difference={difference}, infura_block={infura_block}, sg_block={sg_block}")
 
 
 def main(OWNER, poolSelect):	#, displayType):	
 	#close_db()	
+	'''
+	#check 'block compare'
+	print()
+	difference, infura_block, sg_block=getBlockCompare.compare_blocks()
+	print("difference, infura_block, sg_block: ", difference, infura_block, sg_block)
+	
 	time.sleep(3)
+	'''
+	waitForSubGraph()
+	
 	init_db()
 
 	result_data = {
