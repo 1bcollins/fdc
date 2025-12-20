@@ -1,0 +1,13 @@
+# Environment variables
+.env
+.env.*
+
+# Private keys
+*.pem
+
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
