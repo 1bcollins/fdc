@@ -245,7 +245,7 @@ except Exception as e:
     print(f"Error: {e}")
 '''
 
-def remLiquAndCollFordefi(token_id, chain, percentage=1.0, liquidity=0, priority=1):
+def remLiquAndCollFordefi(token_id, chain, percentage=1.0, liquidity=0, priority=1, maxGasPrice=40):
     token_id = int(token_id)
     # Validate input
     if not (0 <= percentage <= 1):
@@ -311,11 +311,11 @@ def remLiquAndCollFordefi(token_id, chain, percentage=1.0, liquidity=0, priority
     nonce = web3.eth.get_transaction_count(WALLET_ADDRESS)
 
     try:
-        gasPriceGwei = getMainNetGas.getGasPrice(priority=priority)
+        gasPriceGwei = getMainNetGas.getGasPrice(priority=priority, maxGasPrice=maxGasPrice)
         gasPrice = int(gasPriceGwei * 1e9)
     except Exception as e:
         print(f"Gas price error: {e}")
-        gasPriceGwei = getMainNetGas.getGasPrice(priority=priority)
+        gasPriceGwei = getMainNetGas.getGasPrice(priority=priority, maxGasPrice=maxGasPrice)
         gasPrice = int(gasPriceGwei * 1e9)
 
     # Estimate gas (rough guess since multicall can be tricky)

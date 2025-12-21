@@ -49,7 +49,7 @@ def getGasMultiplier(gasPriceGwei, maxGasPrice):
     gasMult = (1 / x) ** alpha
 
     # Clamp result
-    return min(3.0, max(1.0, gasMult))
+    return min(2.0, max(1.0, gasMult))
 
 
 def getGasPrice(priority=3, maxGasPrice=40):
@@ -81,6 +81,8 @@ def getGasPrice(priority=3, maxGasPrice=40):
 		gasPriceGwei=gasRange[priority] if gasRange[priority]>gasBaseGwei else float(gasBaseGwei)*1.05
 	
 	gasPriceGwei=gasMultiplier*gasPriceGwei
+	print()
+	print(f"Adjusted Gas Price: {gasPriceGwei}")
 	return gasPriceGwei
 	
 if __name__ == "__main__":

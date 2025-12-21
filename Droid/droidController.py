@@ -479,7 +479,7 @@ def addPositionToDB(nftNumber, nftArray, nftsLiquUSD, cursor, botArray, connecti
 		print()
 		gasCheck=getGasCheck(max_gas_calc)	#True/False return. 
 		if (gasCheck):
-			receipt=lpPositionLiquidate.remLiquAndCollFordefi(nftNumber, CHAIN)
+			receipt=lpPositionLiquidate.remLiquAndCollFordefi(nftNumber, CHAIN, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 			if(receipt=="fail"):
 				print("error liquidating position!")
 				print()
@@ -1337,7 +1337,7 @@ def moveCenter(droid, existingNft, cursor):
 			#test="y"  #test=input("Do you want to remove liquidity? ")
 			print()
 			#if test=="y":
-			receipt=lpPositionLiquidate.remLiquAndCollFordefi(currentCenterNft, CHAIN, percentage=perc)
+			receipt=lpPositionLiquidate.remLiquAndCollFordefi(currentCenterNft, CHAIN, percentage=perc, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 			if(receipt=="fail"):
 				print(f"Failed to reduce liquidity by % {perc}")
 			else:
@@ -1350,7 +1350,7 @@ def moveCenter(droid, existingNft, cursor):
 		#test="y"  #test=input("Do you want to ADD liquidity? ")
 		#print()
 		if entranceParams!="fail":
-			tx_hash, addLiquError = v3AddLiquidity.addLiquFordefi(entranceParams, CHAIN)
+			tx_hash, addLiquError = v3AddLiquidity.addLiquFordefi(entranceParams, CHAIN, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 			updateLpTxs(droid['id'])
 			posRecord=getLpPositionRecord(existingNft, cursor)	#getPosId(existingNft, cursor)
 			posId=posRecord['id']
@@ -1366,7 +1366,7 @@ def moveCenter(droid, existingNft, cursor):
 		if(actualCenterNftFundingUSD>0): 
 			print("Moving center to existing NFT. Existing NFT is not funded.")
 			print()
-			receipt=lpPositionLiquidate.remLiquAndCollFordefi(currentCenterNft, CHAIN)
+			receipt=lpPositionLiquidate.remLiquAndCollFordefi(currentCenterNft, CHAIN, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 			if(receipt=="fail"): return movedTo, movedToBot
 			time.sleep(12)
 			setPositions(droid['poolId'], OWNER)	#reSet LpPositionsStat
@@ -1376,7 +1376,7 @@ def moveCenter(droid, existingNft, cursor):
 		#test="y"  #test=input("do you want to add the Liqu to the NFT? ")
 		#print()
 		if entranceParams!="fail":
-			tx_hash, addLiquError = v3AddLiquidity.addLiquFordefi(entranceParams, CHAIN)
+			tx_hash, addLiquError = v3AddLiquidity.addLiquFordefi(entranceParams, CHAIN, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 			#time.sleep(10)
 			#setPositions(droid['poolId'], OWNER)	#reSet LpPositionsStat
 			updateLpTxs(droid['id'])
@@ -1448,7 +1448,7 @@ def centerRebalance(droid, cursor, connection):
 		currentNftLiquUSD = getNftLiquUSD(currentNft) if droid['centerPosBotId'] != 0 else 0.0
 		if currentNftLiquUSD > 0:
 			# Remove liquidity for existing position
-			receipt = lpPositionLiquidate.remLiquAndCollFordefi(int(currentNft), CHAIN)	#, percentage=1.0, liquidity=0, priority=1)
+			receipt = lpPositionLiquidate.remLiquAndCollFordefi(int(currentNft), CHAIN, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])	#, percentage=1.0, liquidity=0, priority=1)
 			if receipt == "fail":
 				print("⚠️  Error removing existing liquidity!")
 				return {"status": "failed", "step": "remove_liquidity"}
@@ -1465,7 +1465,7 @@ def centerRebalance(droid, cursor, connection):
 			print("❌ Failed to build mint params")
 			return {"status": "failed", "step": "mint_build"}
 
-		txHash = v3Mint.mintFordefi(mintParams, CHAIN)
+		txHash = v3Mint.mintFordefi(mintParams, CHAIN, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 		updateLpTxs(droid['id'])
 		newNftInserts.newNftInserts(txHash, droid['centerPosBotId'])
 
@@ -1587,7 +1587,7 @@ def handle_existing_nft_extension(nftNumber, droid, ladder_index, botId, cursor,
 	print("  Liquidity Params:", entranceParams)
 	#if input("  Continue to add liquidity? (y/n): ").lower() == "y":
 	if entranceParams!="fail":
-		tx_hash, addLiquError = v3AddLiquidity.addLiquFordefi(entranceParams, CHAIN)
+		tx_hash, addLiquError = v3AddLiquidity.addLiquFordefi(entranceParams, CHAIN, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 		updateLpTxs(droid['id'])
 
 	lpPositionRecord = getLpPositionRecord(nftNumber, cursor)
@@ -1621,7 +1621,7 @@ def handle_new_mint_position(droid, ladder_index, tickLower, tickUpper, botId, c
 
 		print("  Mint Params:", mintParams)
 		#if input("  Continue to mint? (y/n): ").lower() == "y":
-		txHash = v3Mint.mintFordefi(mintParams, CHAIN)
+		txHash = v3Mint.mintFordefi(mintParams, CHAIN, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 		updateLpTxs(droid['id'])
 		registerPositionBot(botId, droid, 0, txHash, cursor, connection)
 	else:
@@ -1727,7 +1727,7 @@ def remove_position(droid, cursor, connection, direction="highest"):
 			test="y"  #test=input("Do you want to remove liquidity? ")
 			print()
 			if test=="y":
-				receipt=lpPositionLiquidate.remLiquAndCollFordefi(int(nftNumber), CHAIN)
+				receipt=lpPositionLiquidate.remLiquAndCollFordefi(int(nftNumber), CHAIN, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 				if (receipt=="fail"): return 0
 				else: updateLpTxs(droid['id'])
 		except Exception as e:
@@ -1775,7 +1775,7 @@ def pruneDroid(droid, cursor, connection):
 			test="y"  #test=input("Do you want to remove liquidity? ")
 			print()
 			if test=="y":
-				receipt=lpPositionLiquidate.remLiquAndCollFordefi(nftArray[max_dev_index], CHAIN)
+				receipt=lpPositionLiquidate.remLiquAndCollFordefi(nftArray[max_dev_index], CHAIN, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 				if(receipt=="fail"): return 0
 				updateLpTxs(droid['id'])
 		except Exception as e:
@@ -1940,7 +1940,7 @@ def ladderDn(droid, cursor, connection):
 			print("Remove greatest indexed bot!")
 			nftArray, nftsLiquUSD = getNftArray(droid, cursor)
 			nftNumber=nftArray[1]
-			receipt=lpPositionLiquidate.remLiquAndCollFordefi(int(nftNumber), CHAIN)
+			receipt=lpPositionLiquidate.remLiquAndCollFordefi(int(nftNumber), CHAIN, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 			if (receipt!="fail"): updateLpTxs(droid['id'])
 			print()
 
@@ -1997,7 +1997,7 @@ def fundingDistrCheck(droid, cursor, connection):
 		print()
 		removeNft= nftArray[len(nftsLiquUSD)-1]
 		if(nftsLiquUSD[len(nftsLiquUSD)-1])>0: 
-			receipt=lpPositionLiquidate.remLiquAndCollFordefi(removeNft, CHAIN)
+			receipt=lpPositionLiquidate.remLiquAndCollFordefi(removeNft, CHAIN, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 			#update droidId to botArray[len(nftsLiquUSD)-1] bot record
 			if (receipt!="fail"):
 				botId=botArray[len(nftsLiquUSD)-1]
@@ -2036,7 +2036,7 @@ def fundingDistrCheck(droid, cursor, connection):
 				print()
 				entranceParams = buildAddLiquParams(nftArray[n], (expectedFunding-liquUSD), droid, cursor)
 				if(entranceParams!="fail"): 
-					tx_hash, addLiquError = v3AddLiquidity.addLiquFordefi(entranceParams, CHAIN)
+					tx_hash, addLiquError = v3AddLiquidity.addLiquFordefi(entranceParams, CHAIN, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 					updateLpTxs(droid['id'])
 					return "fundsAdded"
 				else:
@@ -2051,7 +2051,7 @@ def fundingDistrCheck(droid, cursor, connection):
 				print("Percent to remove: ", perc)
 				print()
 				receipt="fail"
-				if(perc>0 and perc<1): receipt=lpPositionLiquidate.remLiquAndCollFordefi(nftArray[n], CHAIN, percentage=perc)
+				if(perc>0 and perc<1): receipt=lpPositionLiquidate.remLiquAndCollFordefi(nftArray[n], CHAIN, percentage=perc, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 				if(receipt!="fail"): 
 					updateLpTxs(droid['id'])
 					return "fundsReducedNeeded"
@@ -2086,7 +2086,7 @@ def ladderUp(droid, cursor, connection):
 			print("Remove greatest indexed bot!")
 			nftArray, nftsLiquUSD = getNftArray(droid, cursor)
 			nftNumber=nftArray[1]
-			receipt=lpPositionLiquidate.remLiquAndCollFordefi(int(nftNumber), CHAIN)
+			receipt=lpPositionLiquidate.remLiquAndCollFordefi(int(nftNumber), CHAIN, priority=droid['txPriority'], maxGasPrice=droid['maxGasPrice'])
 			if (receipt!="fail"): updateLpTxs(droid['id'])
 			print()
 

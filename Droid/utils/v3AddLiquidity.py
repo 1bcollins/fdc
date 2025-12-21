@@ -97,11 +97,11 @@ def increase_liquidityOLD(params, gas):
     return tx_hash.hex(), addLiquError
 
 
-def buildHexData(params, gas):
+def buildHexData(params, gas, priority=1, maxGasPrice=40):
 	
 	try:
 		# Get gas price
-		gasPriceGwei = getMainNetGas.getGasPrice()
+		gasPriceGwei = getMainNetGas.getGasPrice(priority=priority, maxGasPrice=maxGasPrice)
 		gasPrice = int(gasPriceGwei * 1e9)
 		print(f"gasPrice for Add Liquidity: {gasPriceGwei} GWEI\n")
 
@@ -238,7 +238,7 @@ def add_liquidity(params):
     return tx_hash, addLiquError
 
 
-def addLiquFordefi(params, chain):
+def addLiquFordefi(params, chain, priority=1, maxGasPrice=40):
     apprRes0=approveToken.approve_token(params['token0'], NFT_POSITION_MANAGER_ADDRESS, params['amount0Desired'])
     apprRes1=approveToken.approve_token(params['token1'], NFT_POSITION_MANAGER_ADDRESS, params['amount1Desired'])	
     params_tuple = format_params(params)
@@ -246,7 +246,7 @@ def addLiquFordefi(params, chain):
     print()
     gas_est = gas_estimate(params_tuple)
     if (apprRes0=="approved" and apprRes1=="approved"): #tx_hash, addLiquError = increase_liquidity(params_tuple, gas_est)
-        txHexData=buildHexData(params_tuple, gas_est)	
+        txHexData=buildHexData(params_tuple, gas_est, priority, maxGasPrice)	
         if (txHexData!="error"):
         	print("txHexData: ", txHexData)
         	print()

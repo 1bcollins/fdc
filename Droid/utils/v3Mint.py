@@ -246,10 +246,10 @@ def mint(params):
 	#txHash=mint_position(params_tuple, gasEst)
 	return txHash
 
-def buildHexData(params, gas):
+def buildHexData(params, gas, priority=1, maxGasPrice=40):
     print("calling buildHexData()")
     
-    gasPriceGwei = getMainNetGas.getGasPrice() 
+    gasPriceGwei = getMainNetGas.getGasPrice(priority=priority, maxGasPrice=maxGasPrice) 
     gasPrice = int(gasPriceGwei * 1e9)
     print(f"gasPrice for Mint: {gasPriceGwei}")
 
@@ -282,7 +282,7 @@ def buildHexData(params, gas):
     return txn
 
 
-def mintFordefi(params, chain):
+def mintFordefi(params, chain, priority=1, maxGasPrice=40):
 	# Approve tokens
 	apprRes0=approve_token(params['token0'], NFT_POSITION_MANAGER_ADDRESS, params['amount0Desired'])
 	apprRes1=approve_token(params['token1'], NFT_POSITION_MANAGER_ADDRESS, params['amount1Desired'])	
