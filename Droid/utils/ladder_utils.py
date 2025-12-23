@@ -14,7 +14,11 @@ def get_ladder_structure(droid, cursor, LpPositionsStat):
     Given a droid record, build the ladder structure of positions
     relative to the center position, sorted by liquidity.
     """
+    print("calling get_ladder_structure")
+    print("droid['centerPosBotId']: ", droid['centerPosBotId'])
     if droid['centerPosBotId'] == 0:
+        print()
+        print("Droid found to be new with centerPosBotId=0")
         return [0]
 
     tick_size = droid.get("tickBuckets", 0)
@@ -52,7 +56,9 @@ def get_ladder_structure(droid, cursor, LpPositionsStat):
     cursor.execute("SELECT nftNumber FROM LpPositions WHERE id = %s", (lp_position_id,))
     result = cursor.fetchone()
     if not result:
-        raise ValueError("LpPosition ID for center not found.")
+        #raise ValueError("LpPosition ID for center not found.")
+        print(" ❌ LpPosition ID for center not found.")
+        return [0]
     center_nft = result["nftNumber"]
     center_price, center_liquidity = get_position_data(center_nft)
 

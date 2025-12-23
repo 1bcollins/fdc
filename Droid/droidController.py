@@ -26,6 +26,7 @@ from utils import updateFeesCollected
 from utils import updateHedgeValuations
 from utils import updateLpTxsGas
 from utils import fordefiErc20Tx
+from utils import getBlockCompare
 #from utils.build_mint_params import buildMintParams
 
 from utils.dbFetch import (
@@ -208,6 +209,8 @@ def updateLpTxs(droid_id):
 	POOL=LpPositionsStat['lpPool']['poolAddress']	#"0x4e68ccd3e89f51c3074ca5072bbac773960dfa36"
 	#WALLET = "0xec92fdc275b81165317a58ad50d5d134828c2f67"
 	print("\n--- Starting Lp Txs sync cycle ---")
+	#add subgraph/BC sync' here
+	getBlockCompare.compare_blocks()
 	try:
 		getAddLiquidities.run(POOL, OWNER, droid_id)
 		getRemoveLiquidities.run(POOL, OWNER, droid_id)
@@ -1145,6 +1148,9 @@ def checkForSwap(amount0_desired, amount1_desired):
 	print("amount0_avail, amount0_desired: ", amount0_avail, ", ", amount0_desired)
 	print("amount1_avail, amount1_desired: ", amount1_avail, ", ", amount1_desired)
 	print()
+	
+	#Add check here to verify BOTH tokens are >0
+	if (amount0_desired<0 or amount1_desired<0): return 0, "na"
 	if(amount0_avail<amount0_desired): 
 		session_logger.info('Token0 funding is LOW!')
 		print("   ⚠️  Token0 funding is LOW!")
@@ -1439,7 +1445,7 @@ def centerRebalance(droid, cursor, connection):
 
 	print(f"🔍 existingNft: {existingNft}, currentNft: {currentNft}")
 	#ADD CHECK HERE: 
-	if(existingNft==currentNft): return {"status": "failed", "step": "same_nft_check"}
+	if(int(existingNft)==int(currentNft)): return {"status": "failed", "step": "same_nft_check"}
 
 	if existingNft == 0:
 		# Minting a new NFT position

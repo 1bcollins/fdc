@@ -539,51 +539,52 @@ def main(OWNER, poolSelect):	#, displayType):
 	return result_data
 
 
-'''
-init_db()
-OWNER = "0x7BF2bd6B212Ad91A5B4686fC1e504CC708461C0e"	#LP Pool account on Python (aka: PyTradeBot)
+if __name__ == "__main__":
+
+	init_db()
+	OWNER = "0x7BF2bd6B212Ad91A5B4686fC1e504CC708461C0e"	#LP Pool account on Python (aka: PyTradeBot)
 
 
-walletSelection = int(sys.argv[1])
-#print("Wallet select: ", walletSelection)
+	walletSelection = int(sys.argv[1])
+	#print("Wallet select: ", walletSelection)
 
-additional_params = sys.argv[2:] if len(sys.argv) > 2 else []
+	additional_params = sys.argv[2:] if len(sys.argv) > 2 else []
 
-if walletSelection==1: 
-	OWNER = "0x7BF2bd6B212Ad91A5B4686fC1e504CC708461C0e"
-	#print("'1C0e Selected")
-elif walletSelection==2: 
-	OWNER = "0xec92fdC275B81165317a58Ad50D5D134828c2f67"
-	#print("'2f67 Selected")
-else:
-	#print("Selectio NOT identified. Using '1C0e")
-	OWNER = "0x7BF2bd6B212Ad91A5B4686fC1e504CC708461C0e"
-#print()
+	if walletSelection==1: 
+		OWNER = "0x7BF2bd6B212Ad91A5B4686fC1e504CC708461C0e"
+		#print("'1C0e Selected")
+	elif walletSelection==2: 
+		OWNER = "0xec92fdC275B81165317a58Ad50D5D134828c2f67"
+		#print("'2f67 Selected")
+	else:
+		#print("Selectio NOT identified. Using '1C0e")
+		OWNER = "0x7BF2bd6B212Ad91A5B4686fC1e504CC708461C0e"
+	#print()
 
 
 
-#display pools avail'
-#print("Pools:")
-lpPoolList=getPolyLpPoolList()
-for pool in lpPoolList:
-	poolName=generatePoolName(pool['poolAddress'])
-	#print(pool['id'], ": ", poolName, "feeTier: ", pool['feeTier'])
-	
-#print()
+	#display pools avail'
+	#print("Pools:")
+	lpPoolList=getPolyLpPoolList()
+	for pool in lpPoolList:
+		poolName=generatePoolName(pool['poolAddress'])
+		#print(pool['id'], ": ", poolName, "feeTier: ", pool['feeTier'])
+		
+	#print()
 
-poolSelect=int(additional_params[0])	#int(sys.argv[2])
+	poolSelect=int(additional_params[0])	#int(sys.argv[2])
 
-close_db()
+	close_db()
 
-result_data=main(OWNER, poolSelect)
+	result_data=main(OWNER, poolSelect)
 
-#print(json.dumps(jsonResult['lpPool'], indent=2))	#<- this works !!!!!!!!!!!!!!
-#print(json.dumps(jsonResult['positions'], indent=2))	#<- this does NOT work !!!!!!!!!!!!!!
-jsonResult = convert_decimals(result_data)  # <- important!
+	#print(json.dumps(jsonResult['lpPool'], indent=2))	#<- this works !!!!!!!!!!!!!!
+	#print(json.dumps(jsonResult['positions'], indent=2))	#<- this does NOT work !!!!!!!!!!!!!!
+	jsonResult = convert_decimals(result_data)  # <- important!
 
-#print(json.dumps(jsonResult['positions'], indent=2))  # now this will work
-print(json.dumps(jsonResult, indent=2))
-'''
+	#print(json.dumps(jsonResult['positions'], indent=2))  # now this will work
+	print(json.dumps(jsonResult, indent=2))
+
 
 	
 	

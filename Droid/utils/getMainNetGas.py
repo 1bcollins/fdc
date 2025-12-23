@@ -31,26 +31,27 @@ def getGasRange():
 	
 	return res
 
+
+
 def getGasMultiplier(gasPriceGwei, maxGasPrice):
     if gasPriceGwei <= 0 or maxGasPrice <= 0:
         return 1.0
 
-    # Normalize price
-    x = gasPriceGwei / maxGasPrice
-
-    # If already at or above max, do nothing
-    if x >= 1.0:
+    if gasPriceGwei >= maxGasPrice:
         return 1.0
 
-    # Curve steepness (higher = faster decay to 1)
     alpha = 0.85
 
-    # Power-law scaling
-    gasMult = (1 / x) ** alpha
+    if gasPriceGwei <= 2:
+        # Gentle rise up to 2
+        return 1.0 + (gasPriceGwei / 2) ** 0.5
 
-    # Clamp result
-    return min(2.0, max(1.0, gasMult))
+    x = gasPriceGwei / maxGasPrice
+    anchor_x = 2 / maxGasPrice
 
+    gasMult = 2 * (x / anchor_x) ** (-alpha)
+
+    return max(1.0, min(2.0, gasMult))
 
 def getGasPrice(priority=3, maxGasPrice=40):
 	'''

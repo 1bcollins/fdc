@@ -4,8 +4,8 @@ from getV3Events import findAnyNftId
 import time
 import pymysql
 
-API_KEY = "8df1823f88d5412e5be6e618817283aa"
-SUBGRAPH_ID = "5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV"
+API_KEY = "8df1823f88d5412e5be6e618817283aa"	#TODO move to .env
+SUBGRAPH_ID = "5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV"	#TODO move to dynamic with pool change
 SUBGRAPH_URL = f"https://gateway.thegraph.com/api/{API_KEY}/subgraphs/id/{SUBGRAPH_ID}"
 
 # Database configuration

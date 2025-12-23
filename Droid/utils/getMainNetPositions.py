@@ -1,7 +1,7 @@
 import requests
 
-API_KEY = "8df1823f88d5412e5be6e618817283aa"  # Replace with your actual API key
-SUBGRAPH_ID = "5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV"
+API_KEY = "8df1823f88d5412e5be6e618817283aa"  # TODO change to .env var
+SUBGRAPH_ID = "5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV"	#TODO change to dynamic with pool changes
 # Function to query pool status
 
 
@@ -172,7 +172,7 @@ if __name__ == "__main__":
         print(pool_status['data']['pools'])
 
         # Query subgraph for owner positions
-        owner_positions = query_all_positions(POOL_ID, OWNER)	#query_subgraph(POOL_ID, OWNER)#, API_KEY)
+        owner_positions = query_subgraph(POOL_ID, OWNER)#, API_KEY)
         print("\nOwner Positions:")
         print(owner_positions)	#['data']['positions'])
         print(len(owner_positions))
