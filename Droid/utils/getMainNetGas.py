@@ -66,7 +66,7 @@ def getGasPrice(priority=3, maxGasPrice=40):
 	gasRange=getGasRange()
 	gasBaseWei, gasBaseGwei=getGasBase.getGasBase()
 	print()
-	print(f"Gas Price per BlockNative: {gasRange[priority]}")
+	print(f"Gas Price per BlockNative: {gasRange}")
 	
 	gasMultiplier=1
 	
@@ -75,10 +75,10 @@ def getGasPrice(priority=3, maxGasPrice=40):
 		gasPriceGwei=gasRange[3] if gasRange[3]>gasBaseGwei else float(gasBaseGwei)*1.05
 		gasMultiplier=getGasMultiplier(gasPriceGwei, maxGasPrice)
 	else:
-	#	gasRange=getGasRange()
-	#	gasBaseWei, gasBaseGwei=getGasBase.getGasBase()
-	#	print()
-	#	print(f"Gas Price per BlockNative: {gasRange[priority]}")
+		#	gasRange=getGasRange()
+		#	gasBaseWei, gasBaseGwei=getGasBase.getGasBase()
+		#	print()
+		#	print(f"Gas Price per BlockNative: {gasRange[priority]}")
 		gasPriceGwei=gasRange[priority] if gasRange[priority]>gasBaseGwei else float(gasBaseGwei)*1.05
 	
 	gasPriceGwei=gasMultiplier*gasPriceGwei
